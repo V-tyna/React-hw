@@ -1,13 +1,12 @@
-import React from 'react';
-import { Color as ColorType } from '../App';
+import React, {useContext} from 'react';
+import {ColorsContext} from '../App';
 import Color from './Color';
+import {ColorType} from "../models/color.model";
 
-type ColorListProps = {
-	colors: ColorType[];
-};
+const ColorList = () => {
+	//@ts-ignore
+	const { colors } = useContext(ColorsContext);
 
-const ColorList = (props: ColorListProps) => {
-	const { colors } = props;
 	return (
 		<div
 			style={{
@@ -20,12 +19,9 @@ const ColorList = (props: ColorListProps) => {
 				border: 'solid 1px black',
 			}}
 		>
-			{colors.map(({id, ...params}) => (
-				<Color key={id} {...params} />
+			{colors.map(({ ...params}: ColorType) => (
+				<Color key={params.id} {...params} />
 			))}
-			{/* {colors.map((color) => (
-				<Color key={color.id} color={color.color} title={color.title} rating={color.rating} id={color.id} />
-			))} */}
 		</div>
 	);
 };

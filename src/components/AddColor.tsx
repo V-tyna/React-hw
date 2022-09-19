@@ -11,14 +11,6 @@ const AddColor = (props: AddColorProps) => {
 	const [titleState, resetTitle] = useInput('');
 	const [colorState, resetColor] = useInput('#ffffff');
 
-	// const refInput = useRef<HTMLInputElement>(null); // {current: 'sss'}
-
-	// useEffect(() => {
-	// 	if(!refInput.current?.value.length) {
-
-	// 		refInput.current?.focus()
-	// 	}
-	// }, [])
 	const handleSubmit = (e: React.MouseEvent) => {
 		e.preventDefault();
 		onAddColor(titleState.value, colorState.value);
@@ -36,23 +28,3 @@ const AddColor = (props: AddColorProps) => {
 };
 
 export default AddColor;
-
-// useEffect(() => {
-// 	console.log('render start')
-
-// 	return () => {
-// 		console.log('unmount')
-// 	}
-// }, [])
-
-// useEffect(() => {
-// 	console.log('render update')
-// })
-
-// useLayoutEffect(() => {
-// 	console.log('render update layout')
-// })
-
-// useEffect(() => {
-// 	console.log('render update color', color)
-// }, [color])
