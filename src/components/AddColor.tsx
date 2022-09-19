@@ -1,21 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { useColor } from '../hooks/useColor';
 import useInput from './useInput';
 
 type AddColorProps = {
-	onAddColor: (title: string, color: string) => void;
+	onCloseForm: () => void;
 };
 
-const AddColor = (props: AddColorProps) => {
-	const { onAddColor } = props;
-
+const AddColor = ({ onCloseForm }: AddColorProps) => {
+	const { handleAddColor } = useColor();
 	const [titleState, resetTitle] = useInput('');
 	const [colorState, resetColor] = useInput('#ffffff');
 
 	const handleSubmit = (e: React.MouseEvent) => {
 		e.preventDefault();
-		onAddColor(titleState.value, colorState.value);
+
+		handleAddColor(titleState.value, colorState.value);
 		resetTitle();
 		resetColor();
+		onCloseForm();
 	};
 
 	return (

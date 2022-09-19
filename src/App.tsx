@@ -1,46 +1,48 @@
-import {ChangeEvent, createContext, useCallback, useEffect, useId, useMemo, useState} from 'react';
 import AddColor from './components/AddColor';
 import ColorList from './components/ColorList';
 import OpenModalButton from './components/OpenModalButton';
-import {useColor} from "./hooks/useColor";
-import {ColorType} from "./models/color.model";
-import {useInput} from "./hooks/useInput";
+import { useColor } from './hooks/useColor';
 
-const savedColors = localStorage.getItem('colors');
-const initColors: ColorType[] = savedColors ? JSON.parse(savedColors) : [
-	{ id: '01', title: 'Green', color: '#1C6758', rating: 5 },
-	{ id: '02', title: 'Red', color: '#C21010', rating: 3 },
-	{ id: '03', title: 'White', color: '#ffffff', rating: 2 },
-];
+import { useInput } from './hooks/useInput';
+import { useToggle } from './hooks/useToggle';
+import { ColorType } from './models/color.model';
 
-export const ColorsContext: any = createContext(null);
+const saveColors = (colors: ColorType[]) => {
+	localStorage.setItem('colors', JSON.stringify(colors));
+};
 
-function App(props: any) {
-	const [isOpenForm, setIsOpenForm] = useState(false);
-	const colorsObject = useColor(initColors, setIsOpenForm);
-	const {value, isValid, errorMessage, inputHandler} = useInput('', [value => value.length < 5 ? 'Email should be larger than 5 letters' : undefined])
+const createMinLengthRule = (minLength: number) => (value: string) =>
+	value.length < minLength ? `Email should be larger than ${minLength} letters` : undefined;
+const MoreThenFiveCharRule = createMinLengthRule(5);
+const RULES = [MoreThenFiveCharRule];
 
-	const handleOpenForm = () => {
-		setIsOpenForm(true);
-	}
+function App() {
+	const { colors } = useColor();
+	const { isOn: isOpenForm, handleOff, handleOn } = useToggle(false);
+	const { value, isValid, errorMessage, inputHandler: inputChangeHandler } = useInput('', RULES);
 
-	const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-		inputHandler(e);
-	}
+	const saveColorsHandler = () => {
+		saveColors(colors);
+	};
 
 	return (
-		<ColorsContext.Provider value={colorsObject}> {props.children}
-		<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-			<ColorList />
-			{isOpenForm ? <AddColor onAddColor={colorsObject.handleAddColor} /> : <OpenModalButton onOpenForm={handleOpenForm} />}
-			{ colorsObject.colors ? <button onClick={colorsObject.saveColorsHandler}>Save colors</button> : null }
-		</div>
+		<>
+			<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
+				<ColorList />
+				{isOpenForm ? <AddColor onCloseForm={handleOff} /> : <OpenModalButton onOpenForm={handleOn} />}
+				{colors.length && <button onClick={saveColorsHandler}>Save colors</button>}
+			</div>
 			<form>
-				<label htmlFor="email">Email: </label>
-				<input onChange={inputChangeHandler} type="text" style={{border: isValid ? "1px solid #ccc" : "1px solid red"}} value={value}/>
-				{errorMessage ? <p>{errorMessage}</p> : null}
+				<label htmlFor='email'>Email: </label>
+				<input
+					onChange={inputChangeHandler}
+					type='text'
+					style={{ border: isValid ? '1px solid #ccc' : '1px solid red' }}
+					value={value}
+				/>
+				{errorMessage && <p>{errorMessage}</p>}
 			</form>
-		</ColorsContext.Provider>
+		</>
 	);
 }
 export default App;

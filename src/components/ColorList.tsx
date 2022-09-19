@@ -1,11 +1,9 @@
-import React, {useContext} from 'react';
-import {ColorsContext} from '../App';
 import Color from './Color';
 import {ColorType} from "../models/color.model";
+import { useColor } from '../hooks/useColor';
 
 const ColorList = () => {
-	//@ts-ignore
-	const { colors } = useContext(ColorsContext);
+	const { colors } = useColor();
 
 	return (
 		<div

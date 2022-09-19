@@ -1,18 +1,18 @@
-import React, {ChangeEvent, useContext} from 'react';
-import {ColorsContext} from "../App";
-import {ColorType} from "../models/color.model";
+import { ChangeEvent } from 'react';
+import { useColor } from '../hooks/useColor';
+import { ColorType } from '../models/color.model';
 
 const Color = (props: ColorType) => {
 	const { id, title, color, rating } = props;
-	const context: any = useContext(ColorsContext);
+	const { changeRate, deleteColor } = useColor();
 
 	const changeRateHandler = (e: ChangeEvent<HTMLSelectElement>) => {
-		context.changeRate(id, +e.target.value);
-	}
+		changeRate(id, +e.target.value);
+	};
 
 	const deleteColorHandler = () => {
-		context.deleteColor(id);
-	}
+		deleteColor(id);
+	};
 
 	return (
 		<div
@@ -27,14 +27,16 @@ const Color = (props: ColorType) => {
 			<h4>{rating}/5</h4>
 			<form>
 				<select value={rating} onChange={changeRateHandler}>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
+					<option value='1'>1</option>
+					<option value='2'>2</option>
+					<option value='3'>3</option>
+					<option value='4'>4</option>
+					<option value='5'>5</option>
 				</select>
+				{/* Можно вынести в отдельные компоненты */}
 			</form>
 			<button onClick={deleteColorHandler}>Delete</button>
+			{/* Можно вынести в отдельные компоненты */}
 		</div>
 	);
 };
